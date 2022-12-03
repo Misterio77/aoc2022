@@ -1,6 +1,6 @@
 # Advent of Code 2022
 
-My haskell attempt on AoC 2022.
+My haskell attempt on [AoC 2022](https://adventofcode.com/2022).
 
 ## How to run
 
