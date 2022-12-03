@@ -19,6 +19,7 @@
 
       apps = forAllSystems (system: {
         day1 = mkApp packages.${system}.default "day1";
+        day2 = mkApp packages.${system}.default "day2";
       });
 
       devShells = forAllSystems (system: {
