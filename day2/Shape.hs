@@ -15,3 +15,13 @@ fromChar 'X' = Rock
 fromChar 'Y' = Paper
 fromChar 'Z' = Scissors
 fromChar x = error $ "Invalid shape: " ++ show x
+
+winsFrom :: Shape -> Shape
+winsFrom Rock = Paper
+winsFrom Paper = Scissors
+winsFrom Scissors = Rock
+
+losesTo :: Shape -> Shape
+losesTo Rock = Scissors
+losesTo Paper = Rock
+losesTo Scissors = Paper
