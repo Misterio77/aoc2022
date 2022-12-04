@@ -30,3 +30,11 @@ executable day3
     build-depends:
         base >= 4.14,
         split >= 0.2
+
+executable day4
+    main-is:          Main.hs
+    hs-source-dirs:   day4
+    default-language: Haskell2010
+    build-depends:
+        base >= 4.14,
+        split >= 0.2
