@@ -1,4 +1,4 @@
-module Rucksack (Rucksack, fromString, commonItems, priorities) where
+module Rucksack (Rucksack, fromString, hasItem, getItems, getPockets, inBothPockets, getPriorities, getBadge, itemPriority) where
 
 import Data.Char (isLower, isUpper, ord)
 import Data.List (group)
@@ -13,13 +13,30 @@ itemPriority x
   | isLower x = ord x - 96
   | otherwise = error ("Invalid item: " ++ show x)
 
-newtype Rucksack = Rucksack (String, String) deriving (Show)
+newtype Rucksack = Rucksack String
 
 fromString :: String -> Rucksack
-fromString x = Rucksack (splitAt ((length x + 1) `div` 2) x)
+fromString = Rucksack
 
-commonItems :: Rucksack -> [Char]
-commonItems (Rucksack (x, y)) = dedup $ filter (`elem` x) y
+hasItem :: Rucksack -> Char -> Bool
+hasItem sack item = item `elem` getItems sack
 
-priorities :: Rucksack -> [Int]
-priorities = map itemPriority . commonItems
+getItems :: Rucksack -> String
+getItems (Rucksack items) = items
+
+getPockets :: Rucksack -> (String, String)
+getPockets (Rucksack items) = splitAt ((length items + 1) `div` 2) items
+
+inBothPockets :: Rucksack -> [Char]
+inBothPockets sack = dedup $ filter (`elem` a) b
+  where
+    (a, b) = getPockets sack
+
+getPriorities :: Rucksack -> [Int]
+getPriorities = map itemPriority . inBothPockets
+
+getBadge :: [Rucksack] -> Char
+getBadge sacks = head $ filter isInAllSacks firstSackItems
+  where
+    firstSackItems = getItems $ head sacks
+    isInAllSacks i = all (`hasItem` i) sacks
