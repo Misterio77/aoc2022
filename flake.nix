@@ -27,6 +27,7 @@
         day1 = mkApp packages.default "day1";
         day2 = mkApp packages.default "day2";
         day3 = mkApp packages.default "day3";
+        day4 = mkApp packages.default "day4";
       };
     }
   );
