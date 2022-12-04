@@ -1,4 +1,4 @@
-module Rucksack (Rucksack, fromString, hasItem, getItems, getPockets, inBothPockets, getPriorities, getBadge, itemPriority) where
+module Rucksack where
 
 import Data.Char (isLower, isUpper, ord)
 import Data.List (group)
