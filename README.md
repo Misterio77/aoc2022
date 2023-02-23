@@ -1,3 +1,6 @@
+[![Built with Nix](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix&color=41439a)](https://builtwithnix.org)
+[![Hydra Status](https://img.shields.io/endpoint?url=https://hydra.m7.rs/job/aoc2022/main/x86_64-linux.default/shield)](https://hydra.m7.rs/jobset/aoc2022/main#tabs-jobs)
+
 # Advent of Code 2022
 
 My Haskell + Rust attempt on [AoC 2022](https://adventofcode.com/2022).
