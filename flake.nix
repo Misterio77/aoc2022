@@ -17,9 +17,9 @@
     forEachSystem = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-linux"];
     forEachPkgs = f: forEachSystem (sys: f nixpkgs.legacyPackages.${sys});
   in rec {
-    packages = forEachPkgs (pkgs: pkgs.callPackage ./nix/default.nix { });
-    devShells = forEachPkgs (pkgs: pkgs.callPackage ./nix/shell.nix { });
-    apps = forEachPkgs (pkgs: pkgs.callPackage ./nix/apps.nix { });
+    packages = forEachPkgs (pkgs: import ./nix/default.nix { inherit pkgs; });
+    devShells = forEachPkgs (pkgs: import ./nix/shell.nix { inherit pkgs; });
+    apps = forEachPkgs (pkgs: import ./nix/apps.nix { inherit pkgs; });
 
     hydraJobs = packages;
     formatter = forEachPkgs (pkgs: pkgs.alejandra);

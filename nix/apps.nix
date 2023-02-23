@@ -1,13 +1,13 @@
-{callPackage, ...}: let
+{ pkgs }: let
   mkApp = pkg: name: {
     type = "app";
     program = "${pkg}/bin/${name}";
   };
-  inherit (callPackage ./.) haskell rust;
+  packages = import ./. { inherit pkgs; };
 in {
-  day1 = mkApp haskell "day1";
-  day2 = mkApp haskell "day2";
-  day3 = mkApp haskell "day3";
-  day4 = mkApp haskell "day4";
-  day5 = mkApp rust "day5";
+  day1 = mkApp packages.haskellDays "day1";
+  day2 = mkApp packages.haskellDays "day2";
+  day3 = mkApp packages.haskellDays "day3";
+  day4 = mkApp packages.haskellDays "day4";
+  day5 = mkApp packages.rustDays "day5";
 }

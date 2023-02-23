@@ -1,15 +1,15 @@
-{symlinkJoin, haskellPackages, rustPlatform, ...}: let
+{ pkgs }: let
   name = "aoc2022";
 in rec {
-  default = symlinkJoin {
+  default = pkgs.symlinkJoin {
     inherit name;
-    paths = [haskell rust];
+    paths = [haskellDays rustDays];
   };
-  haskell = haskellPackages.developPackage {
+  haskellDays = pkgs.haskellPackages.developPackage {
     inherit name;
     root = ../.;
   };
-  rust = rustPlatform.buildRustPackage {
+  rustDays = pkgs.rustPlatform.buildRustPackage {
     inherit name;
     src = ../.;
     cargoLock.lockFile = ../Cargo.lock;

@@ -1,29 +1,21 @@
-{
-  mkShell,
-  callPackage,
-  ghc,
-  cabal-install,
-  haskell-language-server,
-  rustc,
-  cargo,
-  rust-analyzer,
-  clippy,
-  ...
-}: rec {
-  default = mkShell {
+{ pkgs }:
+let
+  packages = import ./. { inherit pkgs; };
+in rec {
+  default = pkgs.mkShell {
     inputsFrom = [haskellShell rustShell];
   };
-  haskellShell = mkShell {
-    inputsFrom = [(callPackage ./.).haskell];
-    buildInputs = [
+  haskellShell = pkgs.mkShell {
+    inputsFrom = [ packages.haskellDays ];
+    buildInputs = with pkgs; [
       ghc
       cabal-install
       haskell-language-server
     ];
   };
-  rustShell = mkShell {
-    inputsFrom = [(callPackage ./.).rust];
-    buildInputs = [
+  rustShell = pkgs.mkShell {
+    inputsFrom = [ packages.rustDays ];
+    buildInputs = with pkgs; [
       rustc
       cargo
       rust-analyzer
