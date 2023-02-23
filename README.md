@@ -16,15 +16,13 @@ nix run .#day1
 ### Cabal (Haskell only)
 
 ```
-cd haskell
 cabal run day1
 ```
 
 ### Cargo (Rust only)
 
 ```
-cd haskell
-cargo run day5
+cargo run --bin day5
 ```
 
 ## How to hack
@@ -33,6 +31,7 @@ Use Cabal and Cargo to `build`, and `run` while developing. You'll want:
 - Haskell: `cabal`, `ghc`, and (optionally) `haskell-language-server`
 - Rust: `cargo`, `rustc`, and (optionally) `rust-analyzer` and `clippy`
 
-The easiest way to get them is through Nix: `nix develop .#rust` or `nix develop .#haskell`.
+The easiest way to get them is through Nix: `nix develop` (You can specify
+`.#haskellShell` or `.#rustShell` if you only need tooling for one language).
 
 Otherwise, just install them manually through your preferred package manager.
