@@ -1,5 +1,7 @@
 # nix build
 result
+# cargo build
+target
 # cabal build
 dist-newstyle
 # cabal v1-build

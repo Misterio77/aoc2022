@@ -1,0 +1,14 @@
+[package]
+edition = "2021"
+name = "aoc2022"
+version = "0.1.0"
+
+description = "Advent of Code 2022"
+authors = ["Gabriel Fontes <hi@m7.rs>"]
+license = "Unlicense"
+
+[dependencies]
+
+[[bin]]
+name = "day5"
+path = "src/day5/main.rs"

@@ -1,34 +1,79 @@
 {
   description = "Advent of Code 2022";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
-    utils.url = "github:numtide/flake-utils";
+  nixConfig = {
+    extra-substituters = ["https://cache.m7.rs"];
+    extra-trusted-public-keys = ["cache.m7.rs:kszZ/NSwE/TjhOcPPQ16IuUiuRSisdiIwhKZCxguaWg="];
   };
 
-  outputs = { self, nixpkgs, utils }: utils.lib.eachDefaultSystem (system:
-    let
-      pkgs = nixpkgs.legacyPackages.${system};
-      mkApp = pkg: name: { type = "app"; program = "${pkg}/bin/${name}"; };
-    in
-    rec {
-      packages.default = pkgs.haskellPackages.callCabal2nix "aoc2022" ./. { };
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+  };
 
-      devShells.default = pkgs.mkShell {
-        inputsFrom = [ packages.default ];
+  outputs = {
+    self,
+    nixpkgs,
+  }: let
+    name = "aoc2022";
+    forEachSystem = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-linux"];
+    forEachPkgs = f: forEachSystem (sys: f nixpkgs.legacyPackages.${sys});
+    mkApp = pkg: name: {
+      type = "app";
+      program = "${pkg}/bin/${name}";
+    };
+  in rec {
+    packages = forEachPkgs (pkgs: rec {
+      default = pkgs.symlinkJoin {
+        inherit name;
+        paths = [ haskell rust ];
+      };
+      haskell = pkgs.haskellPackages.developPackage {
+        inherit name;
+        root = ./.;
+      };
+      rust = pkgs.rustPlatform.buildRustPackage {
+        inherit name;
+        src = ./.;
+        cargoLock.lockFile = ./Cargo.lock;
+      };
+    });
+
+    devShells = forEachPkgs (pkgs: rec {
+      default = pkgs.mkShell {
+        inputsFrom = [ haskell rust ];
+      };
+      haskell = pkgs.mkShell {
+        inputsFrom = [ packages.${pkgs.system}.haskell ];
         buildInputs = with pkgs; [
-          haskell-language-server
-          cabal-install
           ghc
+          cabal-install
+          haskell-language-server
         ];
       };
-
-      apps = {
-        day1 = mkApp packages.default "day1";
-        day2 = mkApp packages.default "day2";
-        day3 = mkApp packages.default "day3";
-        day4 = mkApp packages.default "day4";
+      rust = pkgs.mkShell {
+        inputsFrom = [ packages.${pkgs.system}.rust ];
+        buildInputs = with pkgs; [
+          rustc
+          cargo
+          rust-analyzer
+          clippy
+        ];
       };
-    }
-  );
+    });
+
+    apps = forEachPkgs (
+      pkgs: let
+        inherit (packages.${pkgs.system}) haskell rust;
+      in {
+        day1 = mkApp haskell "day1";
+        day2 = mkApp haskell "day2";
+        day3 = mkApp haskell "day3";
+        day4 = mkApp haskell "day4";
+        day5 = mkApp rust "day5";
+      }
+    );
+
+    hydraJobs = packages;
+    formatter = forEachPkgs (pkgs: pkgs.alejandra);
+  };
 }

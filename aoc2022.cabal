@@ -1,6 +1,6 @@
 cabal-version:      2.4
 name:               aoc2022
-version:            0.1.0.0
+version:            0.1.0
 
 synopsis:   Advent of Code 2022
 author:     Gabriel Fontes
@@ -9,7 +9,7 @@ license:    Unlicense
 
 executable day1
     main-is:          Main.hs
-    hs-source-dirs:   day1
+    hs-source-dirs:   src/day1
     default-language: Haskell2010
     build-depends:
         base >= 4.14,
@@ -17,7 +17,7 @@ executable day1
 
 executable day2
     main-is:          Main.hs
-    hs-source-dirs:   day2
+    hs-source-dirs:   src/day2
     default-language: Haskell2010
     other-modules:    Shape, Outcome
     build-depends:
@@ -25,7 +25,7 @@ executable day2
 
 executable day3
     main-is:          Main.hs
-    hs-source-dirs:   day3
+    hs-source-dirs:   src/day3
     default-language: Haskell2010
     build-depends:
         base >= 4.14,
@@ -33,7 +33,7 @@ executable day3
 
 executable day4
     main-is:          Main.hs
-    hs-source-dirs:   day4
+    hs-source-dirs:   src/day4
     default-language: Haskell2010
     build-depends:
         base >= 4.14,
