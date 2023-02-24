@@ -8,7 +8,12 @@ authors = ["Gabriel Fontes <hi@m7.rs>"]
 license = "Unlicense"
 
 [dependencies]
+anyhow = "1.0"
 
 [[bin]]
 name = "day5"
 path = "src/day5/main.rs"
+
+[[bin]]
+name = "day6"
+path = "src/day6/main.rs"
