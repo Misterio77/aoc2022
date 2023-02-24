@@ -18,10 +18,6 @@
   }:
     utils.lib.eachSystem ["x86_64-linux" "aarch64-linux"] (system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      mkApp = name: pkg: {
-        type = "app";
-        program = "${pkg}/bin/${name}";
-      };
     in rec {
       packages = {
         default = pkgs.symlinkJoin {
@@ -64,14 +60,32 @@
       };
 
       apps = {
-        day1 = mkApp "day1" packages.haskellDays;
-        day2 = mkApp "day2" packages.haskellDays;
-        day3 = mkApp "day3" packages.haskellDays;
-        day4 = mkApp "day4" packages.haskellDays;
-        day5 = mkApp "day5" packages.rustDays;
-        day6 = mkApp "day6" packages.rustDays;
+        day1 = utils.lib.mkApp {
+          name = "day1";
+          drv = packages.haskellDays;
+        };
+        day2 = utils.lib.mkApp {
+          name = "day2";
+          drv = packages.haskellDays;
+        };
+        day3 = utils.lib.mkApp {
+          name = "day3";
+          drv = packages.haskellDays;
+        };
+        day4 = utils.lib.mkApp {
+          name = "day4";
+          drv = packages.haskellDays;
+        };
+        day5 = utils.lib.mkApp {
+          name = "day5";
+          drv = packages.rustDays;
+        };
+        day6 = utils.lib.mkApp {
+          name = "day6";
+          drv = packages.rustDays;
+        };
       };
-      hydraJobs = packages;
+      hydraJobs = utils.lib.filterPackages system packages;
       formatter = pkgs.alejandra;
     });
 }
