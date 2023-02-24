@@ -20,6 +20,7 @@ in rec {
       cargo
       rust-analyzer
       clippy
+      rustfmt
     ];
   };
 }
