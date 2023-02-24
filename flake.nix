@@ -59,31 +59,16 @@
         };
       };
 
-      apps = {
-        day1 = utils.lib.mkApp {
-          name = "day1";
-          drv = packages.haskellDays;
-        };
-        day2 = utils.lib.mkApp {
-          name = "day2";
-          drv = packages.haskellDays;
-        };
-        day3 = utils.lib.mkApp {
-          name = "day3";
-          drv = packages.haskellDays;
-        };
-        day4 = utils.lib.mkApp {
-          name = "day4";
-          drv = packages.haskellDays;
-        };
-        day5 = utils.lib.mkApp {
-          name = "day5";
-          drv = packages.rustDays;
-        };
-        day6 = utils.lib.mkApp {
-          name = "day6";
-          drv = packages.rustDays;
-        };
+      apps = let
+        mkApp' = name: drv: utils.lib.mkApp { inherit name drv; };
+      in {
+        day1 = mkApp' "day1" packages.haskellDays;
+        day2 = mkApp' "day2" packages.haskellDays;
+        day3 = mkApp' "day3" packages.haskellDays;
+        day4 = mkApp' "day4" packages.haskellDays;
+        day5 = mkApp' "day5" packages.rustDays;
+        day6 = mkApp' "day6" packages.rustDays;
+        day25 = mkApp' "day25" packages.rustDays;
       };
       hydraJobs = utils.lib.filterPackages system packages;
       formatter = pkgs.alejandra;
