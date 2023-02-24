@@ -1,24 +1,9 @@
+use anyhow::{Context, Error, Result};
+
 use std::{
     io::{self, BufRead},
     str::FromStr,
 };
-
-#[derive(Debug, Clone)]
-pub enum Error {
-    StackNotFound,
-    StackEmpty,
-    Parsing,
-}
-impl From<std::num::ParseIntError> for Error {
-    fn from(_: std::num::ParseIntError) -> Error {
-        Error::Parsing
-    }
-}
-impl From<std::io::Error> for Error {
-    fn from(_: std::io::Error) -> Error {
-        Error::Parsing
-    }
-}
 
 pub struct Move {
     qty: usize,
@@ -30,9 +15,9 @@ impl FromStr for Move {
     type Err = Error;
     fn from_str(s: &str) -> Result<Move, Error> {
         let mut split = s.split_whitespace().skip(1).step_by(2);
-        let qty = split.next().ok_or(Error::Parsing)?.parse()?;
-        let from = split.next().ok_or(Error::Parsing)?.parse()?;
-        let to = split.next().ok_or(Error::Parsing)?.parse()?;
+        let qty = split.next().context("Parsing move")?.parse()?;
+        let from = split.next().context("Parsing move")?.parse()?;
+        let to = split.next().context("Parsing move")?.parse()?;
         Ok(Move { qty, from, to })
     }
 }
@@ -44,16 +29,16 @@ impl Ship {
     fn push_boxes(&mut self, stack_no: usize, boxes: &[char]) -> Result<(), Error> {
         self.0
             .get_mut(stack_no - 1)
-            .ok_or(Error::StackNotFound)?
+            .context("Stack not found")?
             .append(&mut boxes.into());
         Ok(())
     }
     fn pop_box(&mut self, stack_no: usize) -> Result<char, Error> {
         self.0
             .get_mut(stack_no - 1)
-            .ok_or(Error::StackNotFound)?
+            .context("Stack not found")?
             .pop()
-            .ok_or(Error::StackEmpty)
+            .context("Stack is empty")
     }
 
     pub fn get_tops(&self) -> Result<String, Error> {
@@ -69,7 +54,7 @@ impl Ship {
     pub fn move_box(&mut self, mov: Move, preserve_order: bool) -> Result<(), Error> {
         let mut boxes = Vec::with_capacity(mov.qty);
         for _ in 0..mov.qty {
-            boxes.push(self.pop_box(mov.from)?);
+            boxes.push(self.pop_box(mov.from).context("No box found")?);
         }
         if preserve_order {
             boxes = boxes.into_iter().rev().collect();
@@ -89,11 +74,11 @@ impl Ship {
         // Get how many stacks
         let stack_count = lines
             .next()
-            .ok_or(Error::Parsing)?
+            .context("Error getting box numbers")?
             .split_whitespace()
             .rev()
             .next()
-            .ok_or(Error::Parsing)?
+            .context("Error getting box number")?
             .parse()?;
         // Get how many boxes per stack
         let stack_capacity = lines.len();
@@ -113,7 +98,7 @@ impl Ship {
                     // Add box to stack
                     stacks
                         .get_mut(stack_no)
-                        .ok_or(Error::Parsing)?
+                        .context("Stack not found")?
                         .push(current_box);
                 }
             }
