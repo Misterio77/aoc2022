@@ -8,20 +8,70 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.11";
+    utils.url = "github:numtide/flake-utils";
   };
 
   outputs = {
     self,
     nixpkgs,
-  }: let
-    forEachSystem = nixpkgs.lib.genAttrs ["x86_64-linux" "aarch64-linux"];
-    forEachPkgs = f: forEachSystem (sys: f nixpkgs.legacyPackages.${sys});
-  in rec {
-    packages = forEachPkgs (pkgs: import ./nix/default.nix { inherit pkgs; });
-    devShells = forEachPkgs (pkgs: import ./nix/shell.nix { inherit pkgs; });
-    apps = forEachPkgs (pkgs: import ./nix/apps.nix { inherit pkgs; });
+    utils,
+  }:
+    utils.lib.eachSystem ["x86_64-linux" "aarch64-linux"] (system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+      mkApp = name: pkg: {
+        type = "app";
+        program = "${pkg}/bin/${name}";
+      };
+    in rec {
+      packages = {
+        default = pkgs.symlinkJoin {
+          name = "aoc2022";
+          paths = with packages; [haskellDays rustDays];
+        };
+        haskellDays = pkgs.haskellPackages.developPackage {
+          name = "aoc2022";
+          root = ./.;
+        };
+        rustDays = pkgs.rustPlatform.buildRustPackage {
+          name = "aoc2022";
+          src = ./.;
+          cargoLock.lockFile = ./Cargo.lock;
+        };
+      };
 
-    hydraJobs = packages;
-    formatter = forEachPkgs (pkgs: pkgs.alejandra);
-  };
+      devShells = {
+        default = pkgs.mkShell {
+          inputsFrom = with devShells; [haskellShell rustShell];
+        };
+        haskellShell = pkgs.mkShell {
+          inputsFrom = with packages; [haskellDays];
+          buildInputs = with pkgs; [
+            ghc
+            cabal-install
+            haskell-language-server
+          ];
+        };
+        rustShell = pkgs.mkShell {
+          inputsFrom = with packages; [rustDays];
+          buildInputs = with pkgs; [
+            rustc
+            cargo
+            rust-analyzer
+            clippy
+            rustfmt
+          ];
+        };
+      };
+
+      apps = {
+        day1 = mkApp "day1" packages.haskellDays;
+        day2 = mkApp "day2" packages.haskellDays;
+        day3 = mkApp "day3" packages.haskellDays;
+        day4 = mkApp "day4" packages.haskellDays;
+        day5 = mkApp "day5" packages.rustDays;
+        day6 = mkApp "day6" packages.rustDays;
+      };
+      hydraJobs = packages;
+      formatter = pkgs.alejandra;
+    });
 }
