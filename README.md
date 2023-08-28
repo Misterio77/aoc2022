@@ -7,22 +7,8 @@ My Haskell + Rust attempt on [AoC 2022](https://adventofcode.com/2022).
 
 ## How to run
 
-### Nix (Haskell or Rust)
-
 ```
 nix run .#day1
-```
-
-### Cabal (Haskell only)
-
-```
-cabal run day1
-```
-
-### Cargo (Rust only)
-
-```
-cargo run --bin day5
 ```
 
 ## How to hack
@@ -31,7 +17,10 @@ Use Cabal and Cargo to `build`, and `run` while developing. You'll want:
 - Haskell: `cabal`, `ghc`, and (optionally) `haskell-language-server`
 - Rust: `cargo`, `rustc`, and (optionally) `rust-analyzer` and `clippy`
 
-The easiest way to get them is through Nix: `nix develop` (You can specify
-`.#haskellShell` or `.#rustShell` if you only need tooling for one language).
+Nix devShells are available for each and every day, for example:
+
+```
+nix develop .#day1
+```
 
 Otherwise, just install them manually through your preferred package manager.
