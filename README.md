@@ -23,4 +23,7 @@ Nix devShells are available for each and every day, for example:
 nix develop .#day1
 ```
 
+Every day has a .envrc file to easily enter the devshell. Just install direnv,
+cd into a day, and run `direnv allow`.
+
 Otherwise, just install them manually through your preferred package manager.
