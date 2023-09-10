@@ -48,7 +48,7 @@
         };
         devShell = pkgs.mkShell {
           inputsFrom = [package];
-          buildInputs = with pkgs; [ghc cabal-install haskell-language-server];
+          buildInputs = with pkgs.haskellPackages; [ghc cabal-install haskell-language-server];
         };
       };
       mkDay = day:
